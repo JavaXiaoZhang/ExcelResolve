@@ -1,0 +1,10 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: test
+  thymeleaf:
+    cache: false
+  servlet:
+    multipart:
+      max-file-size: 50MB

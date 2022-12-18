@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <base href="http://localhost:8080"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!--<div class="mb-3">
+    <label for="formFile" class="form-label">Default file input example</label>
+    <input class="form-control" type="file" id="formFile">
+</div>
+<div class="mb-3">
+    <label for="formFileMultiple" class="form-label">Multiple files input example</label>
+    <input class="form-control" type="file" id="formFileMultiple" multiple>
+</div>
+<div class="mb-3">
+    <label for="formFileDisabled" class="form-label">Disabled file input example</label>
+    <input class="form-control" type="file" id="formFileDisabled" disabled>
+</div>
+<div class="mb-3">
+    <label for="formFileSm" class="form-label">Small file input example</label>
+    <input class="form-control form-control-sm" id="formFileSm" type="file">
+</div>-->
+<form class="row g-3" id="fileForm" action="file/upload" method="post" enctype="multipart/form-data" style="position: absolute;
+            top: 40%;
+            left: 20%;
+            -webkit-transform: translateY(-50%);
+            -moz-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            -o-transform: translateY(-50%);
+            transform: translateY(-50%);
+            min-height: 300px;
+            height: auto;
+            width: 50%">
+    <div>
+        <label for="previousFile" class="form-label">上期文件</label>
+        <input class="form-control form-control-lg" id="previousFile" type="file" name="previousFile">
+    </div>
+    <div>
+        <label for="currentFile" class="form-label">当前文件</label>
+        <input class="form-control form-control-lg" id="currentFile" type="file" name="currentFile">
+    </div>
+    <div>
+        <label for="compareFile" class="form-label">比对格式文件</label>
+        <input class="form-control form-control-lg" id="compareFile" type="file" name="compareFile">
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-primary mb-3" id="sbtBtn">解析</button>
+    </div>
+</form>
+<a id="downloadReport" href="file/downloadReport" hidden="hidden">hidden</a>
+<!--<div class="col-auto">
+    <button type="submit" class="btn btn-primary mb-3">生成报告</button>
+</div>-->
+<script src="js/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("#sbtBtn").click(function (){
+            let data = new FormData();
+            data.append('previousFile', $('#previousFile').prop('files')[0]);
+            data.append('currentFile', $('#currentFile').prop('files')[0]);
+            data.append('compareFile', $('#compareFile').prop('files')[0]);
+            $.ajax({
+                type: 'POST',
+                url: "file/upload",
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    $("#downloadReport")[0].click();
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>

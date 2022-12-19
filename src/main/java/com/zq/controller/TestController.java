@@ -74,7 +74,7 @@ public class TestController {
             //Map<String, String> colorMap = new HashMap<>(previousMap.size());
             generateColor(currentWorkbook, previousMap);
 
-            File exportFile = new File("E:\\" + downloadFilename);
+            File exportFile = new File("D:\\" + downloadFilename);
             outputStream = new FileOutputStream(exportFile);
             currentWorkbook.write(outputStream);
             outputStream.flush();
@@ -207,7 +207,7 @@ public class TestController {
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Content-Disposition",
                     "attachment;filename=" + new String(downloadFilename.getBytes("gb2312"), "ISO-8859-1"));
-            File reportFile = new File("E:\\" + downloadFilename);
+            File reportFile = new File("D:\\" + downloadFilename);
             IOUtils.write(FileUtils.readFileToByteArray(reportFile), response.getOutputStream());
             reportFile.delete();
         } catch (Exception e) {

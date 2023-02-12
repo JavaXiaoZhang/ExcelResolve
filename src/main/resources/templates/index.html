@@ -36,16 +36,12 @@
             height: auto;
             width: 50%">
     <div>
-        <label for="previousFile" class="form-label">上期文件</label>
-        <input class="form-control form-control-lg" id="previousFile" type="file" name="previousFile">
+        <label for="previousFile" class="form-label">上期文件夹</label>
+        <input class="form-control form-control-lg" id="previousFile" type="file" name="previousFile" webkitdirectory>
     </div>
     <div>
-        <label for="currentFile" class="form-label">当前文件</label>
-        <input class="form-control form-control-lg" id="currentFile" type="file" name="currentFile">
-    </div>
-    <div>
-        <label for="compareFile" class="form-label">比对格式文件</label>
-        <input class="form-control form-control-lg" id="compareFile" type="file" name="compareFile">
+        <label for="currentFile" class="form-label">当期文件夹</label>
+        <input class="form-control form-control-lg" id="currentFile" type="file" name="currentFile" webkitdirectory>
     </div>
     <div class="col-auto">
         <button type="button" class="btn btn-primary mb-3" id="sbtBtn">解析</button>
@@ -60,9 +56,12 @@
     $(function(){
         $("#sbtBtn").click(function (){
             let data = new FormData();
-            data.append('previousFile', $('#previousFile').prop('files')[0]);
-            data.append('currentFile', $('#currentFile').prop('files')[0]);
-            data.append('compareFile', $('#compareFile').prop('files')[0]);
+            for (let i = 0; i < $('#previousFile').prop('files').length; i++) {
+                data.append('previousFile', $('#previousFile').prop('files')[i]);
+            }
+            for (let i = 0; i < $('#previousFile').prop('files').length; i++) {
+                data.append('currentFile', $('#currentFile').prop('files')[i]);
+            }
             $.ajax({
                 type: 'POST',
                 url: "file/upload",
@@ -70,8 +69,12 @@
                 cache: false,
                 contentType: false,
                 processData: false,
-                success: function () {
-                    $("#downloadReport")[0].click();
+                success: function (result) {
+                    if (result === "0"){
+                        $("#downloadReport")[0].click();
+                    }else {
+                        alert(result)
+                    }
                 }
             });
         })

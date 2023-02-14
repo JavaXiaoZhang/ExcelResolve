@@ -1,5 +1,6 @@
 package com.zq.controller;
 
+import javafx.scene.control.Alert;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -32,6 +33,7 @@ import java.util.Map;
 @RequestMapping("file")
 public class TestController {
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+    private static final String COMPARE_FILE = "校验文件.xls";
     private static final String RESULT_FILE = "解析结果.xls";
     private static final String RESULT_FILE_SUFFIX = "_result.xls";
     static final String BASE_PATH = System.getProperty("user.dir") + File.separator;
@@ -231,6 +233,38 @@ public class TestController {
             IOUtils.write(FileUtils.readFileToByteArray(reportFile), response.getOutputStream());
         } catch (Exception e) {
             logger.error(e.toString());
+        }
+    }
+
+    @PostMapping("uploadCompareFile")
+    @ResponseBody
+    @CrossOrigin("*")
+    public String upload(MultipartFile file, HttpServletRequest request){
+        FileOutputStream fileOutputStream = null;
+        try {
+            File reportFile = new File(BASE_PATH + getIpAddr(request) + ".xls");
+            fileOutputStream = new FileOutputStream(reportFile);
+            IOUtils.write(IOUtils.toByteArray(file.getInputStream()), fileOutputStream);
+            fileOutputStream.flush();
+            return "0";
+        } catch (Exception e) {
+            logger.error("", e);
+            return e.getMessage();
+        }finally {
+            IOUtils.closeQuietly(fileOutputStream);
+        }
+    }
+
+    @GetMapping("downloadCompareFile")
+    public void downloadCompareFile(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition",
+                    "attachment;filename=" + new String(COMPARE_FILE.getBytes("gb2312"), "ISO-8859-1"));
+            File reportFile = new File(BASE_PATH + getIpAddr(request) + ".xls");
+            IOUtils.write(FileUtils.readFileToByteArray(reportFile), response.getOutputStream());
+        } catch (Exception e) {
+            logger.error("", e);
         }
     }
 }

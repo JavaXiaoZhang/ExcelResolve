@@ -8,22 +8,33 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<!--<div class="mb-3">
-    <label for="formFile" class="form-label">Default file input example</label>
-    <input class="form-control" type="file" id="formFile">
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="position: absolute;
+            top: 3%;
+            left: 3%;
+            height: auto">
+    校验文件
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">校验文件</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="previousFile" class="form-label">上传校验文件</label>
+                <input class="form-control mb-3" id="compareFileInput" type="file" name="file" onchange="uploadCompareFileFunc()" accept=".xls">
+            </div>
+            <div class="modal-footer">
+                <a id="downloadCompareFile" href="file/downloadCompareFile" type="button" class="btn btn-primary">下载校验文件</a>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="mb-3">
-    <label for="formFileMultiple" class="form-label">Multiple files input example</label>
-    <input class="form-control" type="file" id="formFileMultiple" multiple>
-</div>
-<div class="mb-3">
-    <label for="formFileDisabled" class="form-label">Disabled file input example</label>
-    <input class="form-control" type="file" id="formFileDisabled" disabled>
-</div>
-<div class="mb-3">
-    <label for="formFileSm" class="form-label">Small file input example</label>
-    <input class="form-control form-control-sm" id="formFileSm" type="file">
-</div>-->
+
 <form class="row g-3" id="fileForm" action="file/upload" method="post" enctype="multipart/form-data" style="position: absolute;
             top: 40%;
             left: 20%;
@@ -44,15 +55,33 @@
         <input class="form-control form-control-lg" id="currentFile" type="file" name="currentFile" webkitdirectory>
     </div>
     <div class="col-auto">
-        <button type="button" class="btn btn-primary mb-3" id="sbtBtn">解析</button>
+        <button type="button" class="btn btn-primary mb-3" id="sbtBtn">开始校验</button>
     </div>
 </form>
 <a id="downloadReport" href="file/downloadReport" hidden="hidden">hidden</a>
-<!--<div class="col-auto">
-    <button type="submit" class="btn btn-primary mb-3">生成报告</button>
-</div>-->
 <script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script type="text/javascript">
+    function uploadCompareFileFunc(){
+        let data = new FormData();
+        data.append('file', $('#compareFileInput').prop('files')[0])
+        $.ajax({
+                type: 'POST',
+                url: "file/uploadCompareFile",
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    if (result === "0"){
+                        alert('上传成功')
+                    }else {
+                        alert(result)
+                    }
+                    document.getElementById('compareFileInput').value = null
+                }
+            });
+    }
     $(function(){
         $("#sbtBtn").click(function (){
             let data = new FormData();

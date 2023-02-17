@@ -1,6 +1,5 @@
 package com.zq.controller;
 
-import javafx.scene.control.Alert;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -34,6 +33,7 @@ import java.util.Map;
 public class TestController {
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     private static final String COMPARE_FILE = "校验文件.xls";
+    private static final String COMPARE_TEMPLATE_FILE = "compare_template.xls";
     private static final String RESULT_FILE = "解析结果.xls";
     private static final String RESULT_FILE_SUFFIX = "_result.xls";
     static final String BASE_PATH = System.getProperty("user.dir") + File.separator;
@@ -47,7 +47,7 @@ public class TestController {
             logger.error("请上传上期文件夹");
             return "请上传上期文件夹";
         }
-        if (currentFile == null  || currentFile.length == 0) {
+        if (currentFile == null || currentFile.length == 0) {
             logger.error("请上传当期文件夹");
             return "请上传当期文件夹";
         }
@@ -170,15 +170,15 @@ public class TestController {
 
     private String getIpAddr(HttpServletRequest request) {
         String ipAddr = request.getRemoteHost();
-        //return ipAddr;
-        return "compare";
+        return ipAddr;
+        //return "compare";
     }
 
     private Map<String, List<String>> doHandlerCompareFile(File file, ArrayListValuedHashMap<String, String> locationMap) throws IOException {
         Workbook compareWorkbook = new HSSFWorkbook(new FileInputStream(file));
         Map<String, List<String>> compareMap = new HashMap<>();
         Sheet compareWorkbookSheet = compareWorkbook.getSheetAt(0);
-        for (int i = 0; i <= compareWorkbookSheet.getLastRowNum(); i++) {
+        for (int i = 1; i <= compareWorkbookSheet.getLastRowNum(); i++) {
             Row row = compareWorkbookSheet.getRow(i);
             if (row.getLastCellNum() < 4) {
                 throw new RuntimeException("请填写完整第" + (i + 1) + "行校验内容");
@@ -239,7 +239,7 @@ public class TestController {
     @PostMapping("uploadCompareFile")
     @ResponseBody
     @CrossOrigin("*")
-    public String upload(MultipartFile file, HttpServletRequest request){
+    public String upload(MultipartFile file, HttpServletRequest request) {
         FileOutputStream fileOutputStream = null;
         try {
             File reportFile = new File(BASE_PATH + getIpAddr(request) + ".xls");
@@ -250,7 +250,7 @@ public class TestController {
         } catch (Exception e) {
             logger.error("", e);
             return e.getMessage();
-        }finally {
+        } finally {
             IOUtils.closeQuietly(fileOutputStream);
         }
     }
@@ -262,7 +262,11 @@ public class TestController {
             response.setHeader("Content-Disposition",
                     "attachment;filename=" + new String(COMPARE_FILE.getBytes("gb2312"), "ISO-8859-1"));
             File reportFile = new File(BASE_PATH + getIpAddr(request) + ".xls");
+            if (!reportFile.exists()) {
+                reportFile = new File(BASE_PATH + COMPARE_TEMPLATE_FILE);
+            }
             IOUtils.write(FileUtils.readFileToByteArray(reportFile), response.getOutputStream());
+            response.getOutputStream().flush();
         } catch (Exception e) {
             logger.error("", e);
         }

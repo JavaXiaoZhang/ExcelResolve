@@ -9,6 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,7 +176,8 @@ public class TestController {
     }
 
     private Map<String, List<String>> doHandlerCompareFile(File file, ArrayListValuedHashMap<String, String> locationMap) throws IOException {
-        Workbook compareWorkbook = new HSSFWorkbook(new FileInputStream(file));
+
+        Workbook compareWorkbook = new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(file)));
         Map<String, List<String>> compareMap = new HashMap<>();
         Sheet compareWorkbookSheet = compareWorkbook.getSheetAt(0);
         for (int i = 1; i <= compareWorkbookSheet.getLastRowNum(); i++) {
